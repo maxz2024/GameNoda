@@ -1,5 +1,5 @@
-const readline = require('readline');
-const dictionary = require('../dictionary');
+const readline = require("readline");
+const dictionary = require("../dictionary");
 
 function createDeck() {
   const suits = dictionary.blackjack.suits;
@@ -30,7 +30,11 @@ function calculatePoints(hand) {
     if (card.value === dictionary.blackjack.values[12]) {
       aceCount++;
       points += 11;
-    } else if (card.value === dictionary.blackjack.values[9] || card.value === dictionary.blackjack.values[10] || dictionary.blackjack.values[11]) {
+    } else if (
+      card.value === dictionary.blackjack.values[9] ||
+      card.value === dictionary.blackjack.values[10] ||
+      dictionary.blackjack.values[11]
+    ) {
       points += 10;
     } else {
       points += parseInt(card.value);
@@ -52,7 +56,7 @@ function playBlackjack() {
       input: process.stdin,
       output: process.stdout,
       terminal: false,
-      prompt: '',
+      prompt: ""
     });
 
     const deck = createDeck();
@@ -61,20 +65,32 @@ function playBlackjack() {
     const playerHand = [deck.pop(), deck.pop()];
     const dealerHand = [deck.pop(), deck.pop()];
 
-    console.log(dictionary.blackjack.yourHand, playerHand[0].value + ' ' + playerHand[0].suit, 'и', playerHand[1].value + ' ' + playerHand[1].suit);
-    console.log(dictionary.blackjack.dogHand, dealerHand[0].value + ' ' + dealerHand[0].suit, dictionary.blackjack.oneMoreHidden);
+    console.log(
+      dictionary.blackjack.yourHand,
+      playerHand[0].value + " " + playerHand[0].suit,
+      "и",
+      playerHand[1].value + " " + playerHand[1].suit
+    );
+    console.log(
+      dictionary.blackjack.dogHand,
+      dealerHand[0].value + " " + dealerHand[0].suit,
+      dictionary.blackjack.oneMoreHidden
+    );
 
     let playerPoints = calculatePoints(playerHand);
     let dealerPoints = calculatePoints(dealerHand);
 
     function askPlayer() {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         if (playerPoints < 21) {
-          rl.question(dictionary.blackjack.takeCard, (answer) => {
-            if (answer.trim().toLowerCase() === '1') {
+          rl.question(dictionary.blackjack.takeCard, answer => {
+            if (answer.trim().toLowerCase() === "1") {
               const newCard = deck.pop();
               playerHand.push(newCard);
-              console.log(dictionary.blackjack.dogHand, newCard.value + ' ' + newCard.suit);
+              console.log(
+                dictionary.blackjack.dogHand,
+                newCard.value + " " + newCard.suit
+              );
               playerPoints = calculatePoints(playerHand);
               console.log(dictionary.blackjack.yourPoints, playerPoints);
               resolve(askPlayer());
@@ -91,14 +107,20 @@ function playBlackjack() {
     }
 
     function dealerTurn() {
-      return new Promise((resolve) => {
-        console.log(dictionary.blackjack.dogShows, dealerHand[1].value + ' ' + dealerHand[1].suit);
+      return new Promise(resolve => {
+        console.log(
+          dictionary.blackjack.dogShows,
+          dealerHand[1].value + " " + dealerHand[1].suit
+        );
 
         while (dealerPoints < 17) {
           const newCard = deck.pop();
           dealerHand.push(newCard);
           dealerPoints = calculatePoints(dealerHand);
-          console.log(dictionary.blackjack.dogGets, newCard.value + ' ' + newCard.suit);
+          console.log(
+            dictionary.blackjack.dogGets,
+            newCard.value + " " + newCard.suit
+          );
         }
 
         console.log(dictionary.blackjack.dogPoints, dealerPoints);
@@ -114,16 +136,18 @@ function playBlackjack() {
           resolve(false);
         } else {
           console.log(dictionary.blackjack.draw);
-          resolve('draw');
+          resolve("draw");
         }
       });
     }
 
-    askPlayer().then((result) => {
-      resolve(result);
-    }).catch((error) => {
-      reject(error);
-    });
+    askPlayer()
+      .then(result => {
+        resolve(result);
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 }
 
